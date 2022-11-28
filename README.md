@@ -2,6 +2,10 @@
 Domineering is student project done for Artificial Intelligence subject at Faculty of Electronic Engineering, University of Niš.
 
 #### Programming language: Python
+#### Contributors:
+-> Emilija Ćojbašić, 18026 </br>
+-> Matija Špeletić, 18043 </br>
+-> Đorđe Antić, 17544 </br>
 
 ### What is Domineering
 Domineering (also called Stop-Gate or Crosscram) is a mathematical game that can be played on any collection of squares on a sheet of graph paper. For example, it can be played on a 6×6 square, a rectangle, an entirely irregular polyomino, or a combination of any number of such components. Two players have a collection of dominoes which they place on the grid in turn, covering up squares. One player places tiles vertically, while the other places them horizontally. (Traditionally, these players are called "Left" and "Right", respectively, or "V" and "H". Both conventions are used in this article.) As in most games in combinatorial game theory, the first player who cannot move loses. [1]
