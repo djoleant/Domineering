@@ -34,6 +34,8 @@ def initialize(size_n, size_m, first):
     :param first: Set the first player
     :return: The values of n and m
     """
+    global n
+    global m
     n = size_n
     m = size_m
     global board
@@ -46,9 +48,9 @@ def initialize(size_n, size_m, first):
 def is_valid(x, y, dir):
     """
     The is_valid function checks if a move is valid. It takes in the x and y coordinates of the piece to be moved,
-    as well as the direction (VERTICAL or HORIZONTAL) that it will be moving. If it is a valid move, then True 
+    as well as the direction (VERTICAL or HORIZONTAL) that it will be moving. If it is a valid move, then True
     is returned; otherwise False is returned.
-    
+
     :param x: Determine the x coordinate of the selected position
     :param y: Determine the y coordinate of the selected position
     :param dir: Determine whether the function is being called to check if a block can be placed horizontally or vertically
@@ -59,7 +61,7 @@ def is_valid(x, y, dir):
     if (dir == VERTICAL and x>=7):
         return False
     if (dir == VERTICAL):
-        if board[y][x] == 0 and board[y+1][x] == 0:
+        if board[y][x] == 0 and board[y-1][x] == 0:
             return True
     elif (dir == HORIZONTAL):
         if board[y][x] == 0 and board[y][x+1] == 0:
@@ -70,10 +72,10 @@ def is_valid(x, y, dir):
 def check_winner():
     """
     The check_winner function checks if the game has been won by either player.
-    It does this by checking each row, column and diagonal for a sequence of two 
-    identical characters (0s in proper direction). If no winner is found, it returns 'N'. 
+    It does this by checking each row, column and diagonal for a sequence of two
+    identical characters (0s in proper direction). If no winner is found, it returns 'N'.
     If X wins, it returns 'X', and if O wins it returns 'O'.
-    
+
     :return: 'X' if 'X' wins, 'O' if 'O' wins and 'N' otherwise
     """
     # 'O' plays next, check HORIZONTAL
@@ -87,29 +89,57 @@ def check_winner():
         if x_won:
             return 'X'
         
-    # 'X' plays next, check VERTICAL    
+    # 'X' plays next, check VERTICAL
     elif (next%2 == 1):
         o_won = True
         for x in range (n):
             for y in range (m-1):
-                if board[y][x] == 0 and board[y+1][x] == 0:
+                if board[y][x] == 0 and board[y-1][x] == 0:
                     o_won = False
                     break
         if o_won:
             return 'O'
     return 'N' # N -> No winner
 
+def play_move(x, y):
+    """
+    The play_move function takes two arguments, x and y, which are the coordinates of the move.
+    It then checks if that move is valid or not. If it is valid, it places a tile on that spot.
+    
+    :param x: Specify the x coordinate of the move
+    :param y: Specify the y coordinate of the move
+    :return: Nothing
+    """
+    global next
+    dir = VERTICAL if next%2 == 1 else HORIZONTAL
+    if not is_valid(x, y, dir):
+        print("Invalid move")
+        return
+
+    if dir == HORIZONTAL:
+        board[y][x] = next
+        board[y][x+1] = next
+
+    elif dir == VERTICAL:
+        board[y][x] = next
+        board[y-1][x] = next
+
+
+    next+=1
+    # check_winner()
+
+
 def print_board():
     """
     The print_board function prints the current state of the game board.
     It takes no arguments and returns nothing.
-    
+
     :return: A graphical representation of the game board
     """
     print("  ", end="")
     for i in range (n):
         print(chr(i+ord("A"))+" ", end="")
-    
+
     print("\n ", "= "*n)
 
     for i in range (m, 0, -1):
@@ -133,5 +163,25 @@ def print_board():
     for i in range (n):
         print(chr(i+ord("A"))+" ", end="")
 
-initialize(8, 8, 1)
-print_board()
+    print()
+
+
+
+def test():
+    # TESTING:
+    initialize(4, 4, 1)
+    print_board()
+    while True:
+        x_y = input()
+        y = int(x_y[0])
+        x = ord(x_y[2].upper())-ord("A")
+        y = m - y
+        play_move(x, y)
+        print_board()
+        win = check_winner()
+        if win != "N":
+            print("\n")
+            print("Winner is " + win)
+            break
+
+test()
