@@ -20,15 +20,16 @@ COMPUTER = 1
 first_player = HUMAN
 board = [[]]
 next = 1
-n = 8 # number of columns - A, B, C ...
-m = 8 # number of rows - 1, 2, 3 ...
+n = 8  # number of columns - A, B, C ...
+m = 8  # number of rows - 1, 2, 3 ...
+
 
 def initialize(size_n, size_m, first):
     """
     The initialize function sets up the board for a new game. 
     It takes two integers, size_n and size_m, as arguments. 
     The function then creates a board of n rows by m columns and fills it with zeros.
-    
+
     :param size_n: Set the number of columns in the board
     :param size_m: Set the number of rows in the board
     :param first: Set the first player
@@ -40,11 +41,13 @@ def initialize(size_n, size_m, first):
     m = size_m
     global board
     global first_player
-    board = [[0 for x in range (n)] for x in range (m)]
+    board = [[0 for x in range(n)] for x in range(m)]
     first_player = first
 
 # x -> row number
 # y -> column letter
+
+
 def is_valid(x, y, dir):
     """
     The is_valid function checks if a move is valid. It takes in the x and y coordinates of the piece to be moved,
@@ -56,9 +59,9 @@ def is_valid(x, y, dir):
     :param dir: Determine whether the function is being called to check if a block can be placed horizontally or vertically
     :return: True if the move is valid
     """
-    if (dir == HORIZONTAL and y>=7):
+    if (dir == HORIZONTAL and y >= 7):
         return False
-    if (dir == VERTICAL and x>=7):
+    if (dir == VERTICAL and x >= 7):
         return False
     if (dir == VERTICAL):
         if board[y][x] == 0 and board[y-1][x] == 0:
@@ -68,6 +71,7 @@ def is_valid(x, y, dir):
             return True
 
     return False
+
 
 def check_winner():
     """
@@ -79,39 +83,40 @@ def check_winner():
     :return: 'X' if 'X' wins, 'O' if 'O' wins and 'N' otherwise
     """
     # 'O' plays next, check HORIZONTAL
-    if (next%2 == 0):
+    if (next % 2 == 0):
         x_won = True
-        for x in range (n-1):
-            for y in range (m):
+        for x in range(n-1):
+            for y in range(m):
                 if board[y][x] == 0 and board[y][x+1] == 0:
                     x_won = False
                     break
         if x_won:
             return 'X'
-        
+
     # 'X' plays next, check VERTICAL
-    elif (next%2 == 1):
+    elif (next % 2 == 1):
         o_won = True
-        for x in range (n):
-            for y in range (m-1):
+        for x in range(n):
+            for y in range(m-1):
                 if board[y][x] == 0 and board[y-1][x] == 0:
                     o_won = False
                     break
         if o_won:
             return 'O'
-    return 'N' # N -> No winner
+    return 'N'  # N -> No winner
+
 
 def play_move(x, y):
     """
     The play_move function takes two arguments, x and y, which are the coordinates of the move.
     It then checks if that move is valid or not. If it is valid, it places a tile on that spot.
-    
+
     :param x: Specify the x coordinate of the move
     :param y: Specify the y coordinate of the move
     :return: Nothing
     """
     global next
-    dir = VERTICAL if next%2 == 1 else HORIZONTAL
+    dir = VERTICAL if next % 2 == 1 else HORIZONTAL
     if not is_valid(x, y, dir):
         print("Invalid move")
         return
@@ -124,8 +129,7 @@ def play_move(x, y):
         board[y][x] = next
         board[y-1][x] = next
 
-
-    next+=1
+    next += 1
     # check_winner()
 
 
@@ -137,21 +141,21 @@ def print_board():
     :return: A graphical representation of the game board
     """
     print("  ", end="")
-    for i in range (n):
+    for i in range(n):
         print(chr(i+ord("A"))+" ", end="")
 
     print("\n ", "= "*n)
 
-    for i in range (m, 0, -1):
+    for i in range(m, 0, -1):
         print(str(i)+"ǁ", end="")
-        for j in range (n):
+        for j in range(n):
             field = board[m-i][j]
             # check if field is empty
             if (field == 0):
                 print(" ", end="")
-            elif (field%2 == 1):
+            elif (field % 2 == 1):
                 print("X", end="")
-            elif (field%2 == 0):
+            elif (field % 2 == 0):
                 print("O", end="")
             print("|" if j < n-1 else "ǁ", end="")
         print(str(i))
@@ -160,11 +164,10 @@ def print_board():
 
     print(" ", "= "*n)
     print("  ", end="")
-    for i in range (n):
+    for i in range(n):
         print(chr(i+ord("A"))+" ", end="")
 
     print()
-
 
 
 def test():
@@ -183,5 +186,6 @@ def test():
             print("\n")
             print("Winner is " + win)
             break
+
 
 test()
