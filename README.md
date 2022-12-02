@@ -52,7 +52,7 @@ na veličinu table, kao i parametar koji se odnosi na prvog igrača.
 
 ### Funkcija za proveru kraja igre
 
-```def check_winner ()```
+```def check_winner()```
 Funkcija proverava da li je neki od igrača pobedio tj. da li je došlo do kraja igre. Ona
 proverava da li se igra nastavlja. Ona vraća _N_ ako niko nije pobedio, _X_ ako je X pobedio i _O_
 ako je O pobedio.
