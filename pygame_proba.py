@@ -1,10 +1,15 @@
 # Importing pygame module
 import pygame
 from pygame.locals import *
+from Domineering import *
+
+
+# TODO: winner check, valid move check, numbers and letters
 
 # initiate pygame and give permission
 # to use pygame's functionality.
 pygame.init()
+initialize(8, 8, HUMAN)
 
 # create the display surface object
 # of specific dimension.
@@ -25,7 +30,7 @@ for i in range(m):
             255, 255, 255), [OFFSET+i*SIZE, OFFSET+j*SIZE, SIZE, SIZE])
         is_black = not is_black
 
-scale_x, scale_y = 1, 2
+scale_x, scale_y = 2, 1
 color1, color2 = (211, 100, 59), (64, 59, 51)
 
 # Creating a variable which we will use
@@ -54,8 +59,12 @@ while run:
                              ((position[0]-OFFSET)//SIZE)*SIZE+5+OFFSET, ((position[1]-OFFSET)//SIZE-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 2, 10)
             scale_x, scale_y = scale_y, scale_x
             color1, color2 = color2, color1
-
-
+            play_move((position[0]-OFFSET)//SIZE, (position[1]-OFFSET)//SIZE)
+            print_board()
+            win = check_winner()
+            if win != "N":
+                print("\n")
+                print("Winner is " + win)
 
     # Draws the surface object to the screen.
     pygame.display.update()

@@ -187,5 +187,5 @@ def test():
             print("Winner is " + win)
             break
 
-
-test()
+if __name__=="__main__":
+    test()
