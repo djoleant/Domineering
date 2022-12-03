@@ -30,7 +30,24 @@ Domineering (also called Stop-Gate or Crosscram) is a mathematical game that can
 [1] https://en.wikipedia.org/wiki/Domineering </br>
 [2] Assignment description
 
+## Quickstart
 
+Clone this repository via
+
+```
+git clone https://github.com/djoleant/Domineering.git
+cd Domineering
+```
+
+Install requirements
+```
+pip install pygame
+```
+
+Start the game
+```
+TODO: define main file
+```
 
 ## Izveštaj prve faze izrade projekta
 ### Formulacija problema i interfejs
