@@ -46,8 +46,6 @@ def initialize(size_n, size_m, first):
 
 # x -> row number
 # y -> column letter
-
-
 def is_valid(x, y, dir):
     """
     The is_valid function checks if a move is valid. It takes in the x and y coordinates of the piece to be moved,
@@ -59,9 +57,9 @@ def is_valid(x, y, dir):
     :param dir: Determine whether the function is being called to check if a block can be placed horizontally or vertically
     :return: True if the move is valid
     """
-    if (dir == HORIZONTAL and y >= 7):
+    if (dir == HORIZONTAL and x >= n-1):
         return False
-    if (dir == VERTICAL and x >= 7):
+    if (dir == VERTICAL and y < 1):
         return False
     if (dir == VERTICAL):
         if board[y][x] == 0 and board[y-1][x] == 0:
@@ -172,7 +170,7 @@ def print_board():
 
 def test():
     # TESTING:
-    initialize(4, 4, 1)
+    initialize(8, 81, 1)
     print_board()
     while True:
         x_y = input()

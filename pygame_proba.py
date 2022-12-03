@@ -50,7 +50,6 @@ while run:
             run = False
 
         # if the type of the event is MOUSEBUTTONDOWN
-
         elif event.type == MOUSEBUTTONDOWN:
             position = event.pos
             pygame.draw.rect(window, color1, [
