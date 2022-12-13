@@ -218,6 +218,16 @@ def print_board():
 
 
 def play_game(size_n, size_m, first):
+    """
+    The play_game function plays a game of Domineering.
+    It takes three arguments: size_n, size_m and first.
+    size_n is the number of rows in the board, while size_m is the number of columns in it.
+    first specifies which player moves first - either HUMAN or COMPUTER. 
+    
+    :param size_n: Set the number of columns in the board
+    :param size_m: Set the number of rows in the board
+    :param first: Specifies which player makes the first move
+    """
     initialize(size_n, size_m, first)
     print_board()
     while True:
