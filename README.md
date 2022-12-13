@@ -53,7 +53,6 @@ TODO: define main file
 ### Formulacija problema i interfejs
 </br>
 
-
 U prvoj fazi izrade projekta Dominacija su implementirane sledeće funkcije:
 
 - Funkcija za postavljanje početnog stanja
@@ -61,6 +60,23 @@ U prvoj fazi izrade projekta Dominacija su implementirane sledeće funkcije:
 - Funkciju za proveru ispravnosti unetog poteza
 - Funkcija za igranje poteza
 - Funkcija za prikaz stanja
+
+## Izveštaj prve faze izrade projekta
+### Operator promene stanja
+</br>
+
+U drugoj fazi izrade projekta Dominacija su realizovane su funkcije koje obezbeđuju:
+- Menjanje trenutnog stanja igre na osnovu konkretnog poteza
+- Unos početnih parametara igre
+- Unos novog poteza i proveru da li je potez ispravan
+- Odigravanje novog poteza ako je ispravan i promenu trenutnog stanja igre
+- Prikaz novonastalog stanja igre nakon odigravanja poteza
+- Proveru kraja i određivanje pobednika u igri nakon odigravanja svakog poteza
+- Formiranje novog stanja igre na osnovu zadatog poteza i zadatog stanja igre
+- Formiranje svih mogućih stanja igre na osnovu zadatog igrača i stanja igre
+</br>
+
+
 
 ### Funkcija za postavljanje početnog stanja
 ```def initialize(size_n, size_m, first)```
@@ -89,3 +105,21 @@ Funkcija postavlja na tablu za igru domine uz prethodnu proveru da li je potez v
 
 ```def print_board()```
 Funkcija prikazuje aktuelno stanje table za igru tj. štampa njenu grafčku reprezentaciju.
+
+### Funkcija koja formira novo stanje igre
+
+```def make_move(x, y, dir)```
+Funkcija koja na osnovu zadatog poteza i zadatog stanje igre (table) formiraju novo stanje igre
+(table)
+
+### Funkcija koja kreira sva moguća stanja igre (Operator promene stanja)
+
+```def get_valid_moves()```
+Funkcija koja na osnovu zadatog igrača na potezu i zadatog stanje igre (table) formiraju sva
+moguća stanje igre (sve moguće table), korišćenjem funkcija iz prethodne stavke
+
+### Funkcija odigravanja
+
+```def play_game(size_n, size_m, first)```
+Glavna funkcija koja pozivanjem prethodno implementiranih funkcija omogućava
+odigravanje partije igre.
