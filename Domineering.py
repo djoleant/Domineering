@@ -147,7 +147,7 @@ def get_valid_moves():
         for x in range(n-1):
             for y in range(m):
                 if board[y][x] == 0 and board[y][x+1] == 0:
-                    valid_moves.append((y, x, HORIZONTAL))
+                    valid_moves.append(((y, x, HORIZONTAL),make_move(y, x, HORIZONTAL)))
                     break
 
     elif (next % 2 == 1):
@@ -155,29 +155,31 @@ def get_valid_moves():
         for x in range(n):
             for y in range(m-1):
                 if board[y][x] == 0 and board[y-1][x] == 0:
-                    valid_moves.append((y, x, VERTICAL))
+                    valid_moves.append(((y, x, VERTICAL),make_move(y, x, VERTICAL)))
                     break
 
     return valid_moves
 
 
-def make_move(move):
+def make_move(x, y, dir):
     """
-    The make_move function takes a move as input and updates the board accordingly.
-       The function also increments next by 1, which is used to keep track of the number 
-       of tiles on the board. This function does not return anything.
-    
-    :param move: Store the move that is made
-    :return: The next value of the board
+    The make_move function takes three arguments: x, y, and dir. 
+    The function will create a new board by copying the old one
+    and make the move.
+
+    :param x: Indicate the x coordinate of the current position
+    :param y: Indicate the row of the board
+    :param dir: Determine whether the move is horizontal or vertical
+    :return: A new board with the move made
     """
-    y,x,dir=move
     global board, next
+    new_board = [x[:] for x in board]
     if dir==HORIZONTAL:
-        board[y][x]=board[y][x+1]=next
-        next+=1
+        new_board[y][x]=new_board[y][x+1]=next
+        # next+=1
     elif dir==VERTICAL:
-        board[y][x]=board[y-1][x]=next
-        next+=1
+        new_board[y][x]=new_board[y-1][x]=next
+        # next+=1
 
 
 def print_board():
