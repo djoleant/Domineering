@@ -134,6 +134,52 @@ def play_move(x, y):
     return True
 
 
+def get_valid_moves():
+    """
+    The get_valid_moves function returns a list of valid moves for the current player.
+    The function takes no arguments and returns a list of tuples, where each tuple contains 
+    the coordinates (y,x) and the type of move (HORIZONTAL or VERTICAL).
+
+    :return: A list of tuples that represent the valid moves in the current state
+    """
+    valid_moves = []
+    if (next % 2 == 0):
+        for x in range(n-1):
+            for y in range(m):
+                if board[y][x] == 0 and board[y][x+1] == 0:
+                    valid_moves.append((y, x, HORIZONTAL))
+                    break
+
+    elif (next % 2 == 1):
+
+        for x in range(n):
+            for y in range(m-1):
+                if board[y][x] == 0 and board[y-1][x] == 0:
+                    valid_moves.append((y, x, VERTICAL))
+                    break
+
+    return valid_moves
+
+
+def make_move(move):
+    """
+    The make_move function takes a move as input and updates the board accordingly.
+       The function also increments next by 1, which is used to keep track of the number 
+       of tiles on the board. This function does not return anything.
+    
+    :param move: Store the move that is made
+    :return: The next value of the board
+    """
+    y,x,dir=move
+    global board, next
+    if dir==HORIZONTAL:
+        board[y][x]=board[y][x+1]=next
+        next+=1
+    elif dir==VERTICAL:
+        board[y][x]=board[y-1][x]=next
+        next+=1
+
+
 def print_board():
     """
     The print_board function prints the current state of the game board.
@@ -171,9 +217,8 @@ def print_board():
     print()
 
 
-def test():
-    # TESTING:
-    initialize(8, 81, 1)
+def play_game(size_n, size_m, first):
+    initialize(size_n, size_m, first)
     print_board()
     while True:
         x_y = input()
@@ -190,4 +235,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    play_game(8,8,first=HUMAN) # TODO: Implement min-max move making logic
