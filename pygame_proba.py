@@ -4,7 +4,7 @@ from pygame.locals import *
 from Domineering import *
 
 
-# TODO: winner check, valid move check, numbers and letters
+# TODO: winner check, valid move check, numbers and letters, ispravi obrnute koordinate
 
 # initiate pygame and give permission
 # to use pygame's functionality.
@@ -58,6 +58,7 @@ while run:
                              ((position[0]-OFFSET)//SIZE)*SIZE+5+OFFSET, ((position[1]-OFFSET)//SIZE-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 2, 10)
             scale_x, scale_y = scale_y, scale_x
             color1, color2 = color2, color1
+            print((position[0]-OFFSET)//SIZE, (position[1]-OFFSET)//SIZE)
             play_move((position[0]-OFFSET)//SIZE, (position[1]-OFFSET)//SIZE)
             print_board()
             win = check_winner()

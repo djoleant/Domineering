@@ -57,7 +57,7 @@ def is_valid(x, y, dir):
     :param dir: Determine whether the function is being called to check if a block can be placed horizontally or vertically
     :return: True if the move is valid
     """
-    if (dir == HORIZONTAL and x >= n-1):
+    if (dir == HORIZONTAL and y >= 7): # promeni 7 u mn-1 i obrni xy
         return False
     if (dir == VERTICAL and y < 1):
         return False
