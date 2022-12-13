@@ -46,6 +46,8 @@ def initialize(size_n, size_m, first):
 
 # x -> row number
 # y -> column letter
+
+
 def is_valid(x, y, dir):
     """
     The is_valid function checks if a move is valid. It takes in the x and y coordinates of the piece to be moved,
@@ -57,7 +59,7 @@ def is_valid(x, y, dir):
     :param dir: Determine whether the function is being called to check if a block can be placed horizontally or vertically
     :return: True if the move is valid
     """
-    if (dir == HORIZONTAL and y >= 7): # promeni 7 u mn-1 i obrni xy
+    if (dir == HORIZONTAL and x >= n-1):
         return False
     if (dir == VERTICAL and y < 1):
         return False
@@ -117,7 +119,7 @@ def play_move(x, y):
     dir = VERTICAL if next % 2 == 1 else HORIZONTAL
     if not is_valid(x, y, dir):
         print("Invalid move")
-        return
+        return False
 
     if dir == HORIZONTAL:
         board[y][x] = next
@@ -129,6 +131,7 @@ def play_move(x, y):
 
     next += 1
     # check_winner()
+    return True
 
 
 def print_board():
@@ -185,5 +188,6 @@ def test():
             print("Winner is " + win)
             break
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     test()
