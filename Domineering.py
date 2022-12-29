@@ -147,7 +147,8 @@ def get_valid_moves():
         for x in range(n-1):
             for y in range(m):
                 if board[y][x] == 0 and board[y][x+1] == 0:
-                    valid_moves.append(((y, x, HORIZONTAL),make_move(y, x, HORIZONTAL)))
+                    valid_moves.append(
+                        ((y, x, HORIZONTAL), make_move(y, x, HORIZONTAL)))
                     break
 
     elif (next % 2 == 1):
@@ -155,13 +156,14 @@ def get_valid_moves():
         for x in range(n):
             for y in range(m-1):
                 if board[y][x] == 0 and board[y-1][x] == 0:
-                    valid_moves.append(((y, x, VERTICAL),make_move(y, x, VERTICAL)))
+                    valid_moves.append(
+                        ((y, x, VERTICAL), make_move(y, x, VERTICAL)))
                     break
 
     return valid_moves
 
 
-def make_move(x, y, dir):
+def make_move(y,x, dir):
     """
     The make_move function takes three arguments: x, y, and dir. 
     The function will create a new board by copying the old one
@@ -174,12 +176,13 @@ def make_move(x, y, dir):
     """
     global board, next
     new_board = [x[:] for x in board]
-    if dir==HORIZONTAL:
-        new_board[y][x]=new_board[y][x+1]=next
+    if dir == HORIZONTAL:
+        new_board[y][x] = new_board[y][x+1] = next
         # next+=1
-    elif dir==VERTICAL:
-        new_board[y][x]=new_board[y-1][x]=next
+    elif dir == VERTICAL:
+        new_board[y][x] = new_board[y-1][x] = next
         # next+=1
+    return new_board
 
 
 def print_board():
@@ -219,32 +222,81 @@ def print_board():
     print()
 
 
+def heuristic(state):
+    return 1
+
+
+def max_value(state, depth, alpha, beta,move):
+    next_states = get_valid_moves()
+    #print(next_states)
+    if depth == 0 or next_states is None or len(next_states)==0:
+        return (state, heuristic(state),move)
+    else:
+        for s in next_states:
+            alpha = max(alpha,
+                        min_value(s[1], depth - 1, alpha, beta,s[0]),
+                        key=lambda x: x[1])
+            if alpha[1] >= beta[1]:
+                return beta
+    return alpha
+
+
+def min_value(state, depth, alpha, beta,move):
+    next_states = get_valid_moves()
+    if depth == 0 or next_states is None or len(next_states)==0:
+        return (state, heuristic(state),move)
+    else:
+        for s in next_states:
+            beta = min(beta,
+                       max_value(s[1], depth - 1, alpha, beta,s[0]),
+                       key=lambda x: x[1])
+        if beta[1] <= alpha[1]:
+            return alpha
+    return beta
+
+
+def minmax(state, depth, my_move, alpha=(board, -1,None), beta=(board, 10000000,None)):
+    if my_move:
+        return max_value(state, depth, alpha, beta,None)
+    else:
+        return min_value(state, depth, alpha, beta,None)
+
+
 def play_game(size_n, size_m, first):
     """
     The play_game function plays a game of Domineering.
     It takes three arguments: size_n, size_m and first.
     size_n is the number of rows in the board, while size_m is the number of columns in it.
     first specifies which player moves first - either HUMAN or COMPUTER. 
-    
+
     :param size_n: Set the number of columns in the board
     :param size_m: Set the number of rows in the board
     :param first: Specifies which player makes the first move
     """
+    global board, next
+    on_move = first_player
     initialize(size_n, size_m, first)
     print_board()
     while True:
-        x_y = input()
-        y = int(x_y[0])
-        x = ord(x_y[2].upper())-ord("A")
-        y = m - y
-        play_move(x, y)
+        if on_move == HUMAN:
+            x_y = input()
+            y = int(x_y[0])
+            x = ord(x_y[2].upper())-ord("A")
+            y = m - y
+            play_move(x, y)
+        elif on_move == COMPUTER:
+            next_state = minmax(board, 3, True)
+            print(next_state)
+            board = next_state[0]
+            next += 1
         print_board()
         win = check_winner()
         if win != "N":
             print("\n")
             print("Winner is " + win)
             break
+        on_move = HUMAN if on_move == COMPUTER else COMPUTER
 
 
 if __name__ == "__main__":
-    play_game(8,8,first=HUMAN) # TODO: Implement min-max move making logic
+    play_game(8, 8, first=HUMAN)  # TODO: Implement min-max move making logic
