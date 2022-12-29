@@ -52,6 +52,21 @@ while run:
         # if the type of the event is MOUSEBUTTONDOWN
         elif event.type == MOUSEBUTTONDOWN:
             position = event.pos
+            next_state = Domineering.minmax(Domineering.board, 3, True)
+            Domineering.print_board()
+            Domineering.board = next_state[0]
+            move=next_state[2]
+            pygame.draw.rect(window, color1, [
+                        (move[1])*SIZE+5+OFFSET, (move[0]-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 0, 10)
+            pygame.draw.rect(window, (0, 0, 0), [
+                        (move[1])*SIZE+5+OFFSET, (move[0]-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 2, 10)
+            scale_x, scale_y = scale_y, scale_x
+            color1, color2 = color2, color1
+            Domineering.next += 1
+            win = Domineering.check_winner()
+            if win != "N":
+                print("\n")
+                print("Winner is " + win)
             if Domineering.play_move((position[0]-OFFSET)//SIZE, (position[1]-OFFSET)//SIZE):
                 pygame.draw.rect(window, color1, [
                                 ((position[0]-OFFSET)//SIZE)*SIZE+5+OFFSET, ((position[1]-OFFSET)//SIZE-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 0, 10)
@@ -65,21 +80,7 @@ while run:
                     print("\n")
                     print("Winner is " + win)
                 
-                next_state = Domineering.minmax(Domineering.board, 3, True)
-                Domineering.print_board()
-                Domineering.board = next_state[0]
-                move=next_state[2]
-                pygame.draw.rect(window, color1, [
-                            (move[1])*SIZE+5+OFFSET, (move[0]-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 0, 10)
-                pygame.draw.rect(window, (0, 0, 0), [
-                            (move[1])*SIZE+5+OFFSET, (move[0]-scale_x+1)*SIZE+5+OFFSET, SIZE*scale_y-10, SIZE*scale_x-10], 2, 10)
-                scale_x, scale_y = scale_y, scale_x
-                color1, color2 = color2, color1
-                Domineering.next += 1
-                win = Domineering.check_winner()
-                if win != "N":
-                    print("\n")
-                    print("Winner is " + win)
+               
 
     # Draws the surface object to the screen.
     pygame.display.update()

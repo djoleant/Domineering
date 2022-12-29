@@ -144,9 +144,10 @@ def get_valid_moves():
     """
     valid_moves = []
     if (next % 2 == 0):
-        for x in range(n-1):
+        for x in range(n):
             for y in range(m):
-                if board[y][x] == 0 and board[y][x+1] == 0:
+                # board[y][x] == 0 and board[y][x+1] == 0:
+                if is_valid(x, y, HORIZONTAL):
                     valid_moves.append(
                         ((y, x, HORIZONTAL), make_move(y, x, HORIZONTAL)))
                     break
@@ -154,8 +155,9 @@ def get_valid_moves():
     elif (next % 2 == 1):
 
         for x in range(n):
-            for y in range(m-1):
-                if board[y][x] == 0 and board[y-1][x] == 0:
+            for y in range(m):
+                # board[y][x] == 0 and board[y-1][x] == 0:
+                if is_valid(x, y, VERTICAL):
                     valid_moves.append(
                         ((y, x, VERTICAL), make_move(y, x, VERTICAL)))
                     break
@@ -163,7 +165,7 @@ def get_valid_moves():
     return valid_moves
 
 
-def make_move(y,x, dir):
+def make_move(y, x, dir):
     """
     The make_move function takes three arguments: x, y, and dir. 
     The function will create a new board by copying the old one
@@ -175,7 +177,7 @@ def make_move(y,x, dir):
     :return: A new board with the move made
     """
     global board, next
-    new_board = [x[:] for x in board]
+    new_board = [row[:] for row in board]
     if dir == HORIZONTAL:
         new_board[y][x] = new_board[y][x+1] = next
         # next+=1
@@ -222,44 +224,58 @@ def print_board():
     print()
 
 
-def heuristic(state):
-    return 1
+def heuristic(state, move):
+    # number of remaining horizontal moves
+    horizontal = 0
+    for x in range(n-1):
+        for y in range(m):
+            if state[y][x] == 0 and state[y][x+1] == 0:
+                horizontal += 1
+
+    vertical = 0
+    for x in range(n):
+        for y in range(m-1):
+            if state[y][x] == 0 and state[y-1][x] == 0:
+                vertical += 1
+    # print(horizontal,vertical)
+    # print(move)
+    return horizontal-vertical+n*(m-1)+m*(n-1) if move[2] == HORIZONTAL else vertical-horizontal+n*(m-1)+m*(n-1)
 
 
-def max_value(state, depth, alpha, beta,move):
+def max_value(state, depth, alpha, beta, move):
     next_states = get_valid_moves()
-    #print(next_states)
-    if depth == 0 or next_states is None or len(next_states)==0:
-        return (state, heuristic(state),move)
+    # print(next_states)
+    if depth == 0 or next_states is None or len(next_states) == 0:
+        return (state, heuristic(state, move), move)
     else:
         for s in next_states:
             alpha = max(alpha,
-                        min_value(s[1], depth - 1, alpha, beta,s[0]),
+                        min_value(s[1], depth - 1, alpha, beta, s[0]),
                         key=lambda x: x[1])
             if alpha[1] >= beta[1]:
                 return beta
     return alpha
 
 
-def min_value(state, depth, alpha, beta,move):
+def min_value(state, depth, alpha, beta, move):
     next_states = get_valid_moves()
-    if depth == 0 or next_states is None or len(next_states)==0:
-        return (state, heuristic(state),move)
+    if depth == 0 or next_states is None or len(next_states) == 0:
+        return (state, heuristic(state, move), move)
     else:
         for s in next_states:
             beta = min(beta,
-                       max_value(s[1], depth - 1, alpha, beta,s[0]),
+                       max_value(s[1], depth - 1, alpha, beta, s[0]),
                        key=lambda x: x[1])
         if beta[1] <= alpha[1]:
             return alpha
     return beta
 
 
-def minmax(state, depth, my_move, alpha=(board, -1,None), beta=(board, 10000000,None)):
+def minmax(state, depth, my_move, alpha=(board, -1, None), beta=(board, 10000000, None)):
     if my_move:
-        return max_value(state, depth, alpha, beta,None)
+        return max_value(state, depth, alpha, beta, None)
     else:
-        return min_value(state, depth, alpha, beta,None)
+        return min_value(state, depth, alpha, beta, None)
 
 
 def play_game(size_n, size_m, first):
@@ -273,9 +289,9 @@ def play_game(size_n, size_m, first):
     :param size_m: Set the number of rows in the board
     :param first: Specifies which player makes the first move
     """
-    global board, next
-    on_move = first_player
+    global board, next, first_player
     initialize(size_n, size_m, first)
+    on_move = first_player
     print_board()
     while True:
         if on_move == HUMAN:
@@ -283,7 +299,8 @@ def play_game(size_n, size_m, first):
             y = int(x_y[0])
             x = ord(x_y[2].upper())-ord("A")
             y = m - y
-            play_move(x, y)
+            if not play_move(x, y):
+                continue
         elif on_move == COMPUTER:
             next_state = minmax(board, 3, True)
             print(next_state)
@@ -299,4 +316,5 @@ def play_game(size_n, size_m, first):
 
 
 if __name__ == "__main__":
-    play_game(8, 8, first=HUMAN)  # TODO: Implement min-max move making logic
+    # TODO: Implement min-max move making logic
+    play_game(8, 8, first=COMPUTER)
