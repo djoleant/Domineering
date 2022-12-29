@@ -97,7 +97,7 @@ def check_winner():
     elif (next % 2 == 1):
         o_won = True
         for x in range(n):
-            for y in range(m-1):
+            for y in range(1,m):
                 if board[y][x] == 0 and board[y-1][x] == 0:
                     o_won = False
                     break
@@ -144,10 +144,10 @@ def get_valid_moves():
     """
     valid_moves = []
     if (next % 2 == 0):
-        for x in range(n):
+        for x in range(n-1):
             for y in range(m):
                 # board[y][x] == 0 and board[y][x+1] == 0:
-                if is_valid(x, y, HORIZONTAL):
+                if board[y][x] == 0 and board[y][x+1] == 0:#is_valid(x, y, HORIZONTAL):
                     valid_moves.append(
                         ((y, x, HORIZONTAL), make_move(y, x, HORIZONTAL)))
                     break
@@ -155,9 +155,9 @@ def get_valid_moves():
     elif (next % 2 == 1):
 
         for x in range(n):
-            for y in range(m):
+            for y in range(1,m):
                 # board[y][x] == 0 and board[y-1][x] == 0:
-                if is_valid(x, y, VERTICAL):
+                if board[y][x] == 0 and board[y-1][x] == 0:#is_valid(x, y, VERTICAL):
                     valid_moves.append(
                         ((y, x, VERTICAL), make_move(y, x, VERTICAL)))
                     break
@@ -234,7 +234,7 @@ def heuristic(state, move):
 
     vertical = 0
     for x in range(n):
-        for y in range(m-1):
+        for y in range(1,m):
             if state[y][x] == 0 and state[y-1][x] == 0:
                 vertical += 1
     # print(horizontal,vertical)
