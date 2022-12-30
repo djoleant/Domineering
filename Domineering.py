@@ -150,7 +150,7 @@ def get_valid_moves():
                 if board[y][x] == 0 and board[y][x+1] == 0:#is_valid(x, y, HORIZONTAL):
                     valid_moves.append(
                         ((y, x, HORIZONTAL), make_move(y, x, HORIZONTAL)))
-                    break
+                    #break
 
     elif (next % 2 == 1):
 
@@ -160,7 +160,7 @@ def get_valid_moves():
                 if board[y][x] == 0 and board[y-1][x] == 0:#is_valid(x, y, VERTICAL):
                     valid_moves.append(
                         ((y, x, VERTICAL), make_move(y, x, VERTICAL)))
-                    break
+                    #break
 
     return valid_moves
 
