@@ -274,8 +274,8 @@ def heuristic(state, move):
                     (y==n-1 or (state[y+1][x]!=0 and state[y+1][x+1]!=0)):
                         safe_moves_h+=1
     
-    return horizontal-vertical+safe_moves_h+n*(m-1)+m*(n-1) if first_player==HUMAN else \
-        vertical-horizontal+n*(m-1)+m*(n-1)+safe_moves_c
+    return horizontal-vertical+safe_moves_h+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 if first_player==HUMAN else \
+        vertical-horizontal+n*(m-1)+m*(n-1)+safe_moves_c+(center_x-center_o)*0.5
 
 
 def max_value(state, depth, alpha, beta, move):
