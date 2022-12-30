@@ -233,14 +233,49 @@ def heuristic(state, move):
             if state[y][x] == 0 and state[y][x+1] == 0:
                 horizontal += 1
 
+    # number of remaining vertical moves
     vertical = 0
     for x in range(n):
         for y in range(1,m):
             if state[y][x] == 0 and state[y-1][x] == 0:
                 vertical += 1
-    # print(horizontal,vertical)
-    # print(move)
-    return horizontal-vertical+n*(m-1)+m*(n-1) if first_player==HUMAN else vertical-horizontal+n*(m-1)+m*(n-1)
+    
+    # give priority to center
+    center_x,center_o,empty=0,0,0
+    for x in range(n//4,3*n//4):
+        for y in range(m//4,3*m//4):
+            if state[y][x]==0:
+                empty+=1
+            elif state[y][x]%2==1:
+                center_x+=1
+            elif state[y][x]%2==0:
+                center_o+=1
+    if first_player==COMPUTER:
+        if center_x>=8:
+            center_x,center_o,empty=0,0,0
+    else:
+        if center_o>=8:
+            center_x,center_o,empty=0,0,0
+
+    safe_moves_c,safe_moves_h=0,0
+    if first_player==COMPUTER:
+        for x in range(n):
+            for y in range(m-1):
+                if state[y][x] == 0 and state[y+1][x] == 0\
+                    and (x==0 or (state[y][x-1]!=0 and state[y+1][x-1]!=0)) and \
+                    (x==n-1 or (state[y][x+1]!=0 and state[y+1][x+1]!=0)):
+                        safe_moves_c+=1
+    
+    else:
+        for y in range(m):
+            for x in range(n-1):
+                if state[y][x] == 0 and state[y][x+1] == 0\
+                    and (y==0 or (state[y-1][x]!=0 and state[y-1][x+1]!=0)) and \
+                    (y==n-1 or (state[y+1][x]!=0 and state[y+1][x+1]!=0)):
+                        safe_moves_h+=1
+    
+    return horizontal-vertical+safe_moves_h+n*(m-1)+m*(n-1) if first_player==HUMAN else \
+        vertical-horizontal+n*(m-1)+m*(n-1)+safe_moves_c
 
 
 def max_value(state, depth, alpha, beta, move):
