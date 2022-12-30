@@ -225,6 +225,7 @@ def print_board():
 
 
 def heuristic(state, move):
+    #global first_player
     # number of remaining horizontal moves
     horizontal = 0
     for x in range(n-1):
@@ -239,7 +240,7 @@ def heuristic(state, move):
                 vertical += 1
     # print(horizontal,vertical)
     # print(move)
-    return horizontal-vertical+n*(m-1)+m*(n-1) if move[2] == HORIZONTAL else vertical-horizontal+n*(m-1)+m*(n-1)
+    return horizontal-vertical+n*(m-1)+m*(n-1) if first_player==HUMAN else vertical-horizontal+n*(m-1)+m*(n-1)
 
 
 def max_value(state, depth, alpha, beta, move):
@@ -317,4 +318,4 @@ def play_game(size_n, size_m, first):
 
 if __name__ == "__main__":
     # TODO: Implement min-max move making logic
-    play_game(8, 8, first=COMPUTER)
+    play_game(8, 8, first=HUMAN)
