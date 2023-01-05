@@ -23,6 +23,8 @@ next = 1
 n = 8  # number of columns - A, B, C ...
 m = 8  # number of rows - 1, 2, 3 ...
 
+safe_moves_coef=10
+
 
 def initialize(size_n, size_m, first):
     """
@@ -97,7 +99,7 @@ def check_winner():
     elif (next % 2 == 1):
         o_won = True
         for x in range(n):
-            for y in range(1,m):
+            for y in range(1, m):
                 if board[y][x] == 0 and board[y-1][x] == 0:
                     o_won = False
                     break
@@ -147,20 +149,22 @@ def get_valid_moves():
         for x in range(n-1):
             for y in range(m):
                 # board[y][x] == 0 and board[y][x+1] == 0:
-                if board[y][x] == 0 and board[y][x+1] == 0:#is_valid(x, y, HORIZONTAL):
+                # is_valid(x, y, HORIZONTAL):
+                if board[y][x] == 0 and board[y][x+1] == 0:
                     valid_moves.append(
                         ((y, x, HORIZONTAL), make_move(y, x, HORIZONTAL)))
-                    #break
+                    # break
 
     elif (next % 2 == 1):
 
         for x in range(n):
-            for y in range(1,m):
+            for y in range(1, m):
                 # board[y][x] == 0 and board[y-1][x] == 0:
-                if board[y][x] == 0 and board[y-1][x] == 0:#is_valid(x, y, VERTICAL):
+                # is_valid(x, y, VERTICAL):
+                if board[y][x] == 0 and board[y-1][x] == 0:
                     valid_moves.append(
                         ((y, x, VERTICAL), make_move(y, x, VERTICAL)))
-                    #break
+                    # break
 
     return valid_moves
 
@@ -225,7 +229,7 @@ def print_board():
 
 
 def heuristic(state, move):
-    #global first_player
+    global safe_moves_coef
     # number of remaining horizontal moves
     horizontal = 0
     for x in range(n-1):
@@ -236,46 +240,64 @@ def heuristic(state, move):
     # number of remaining vertical moves
     vertical = 0
     for x in range(n):
-        for y in range(1,m):
+        for y in range(1, m):
             if state[y][x] == 0 and state[y-1][x] == 0:
                 vertical += 1
-    
-    # give priority to center
-    center_x,center_o,empty=0,0,0
-    for x in range(n//4,3*n//4):
-        for y in range(m//4,3*m//4):
-            if state[y][x]==0:
-                empty+=1
-            elif state[y][x]%2==1:
-                center_x+=1
-            elif state[y][x]%2==0:
-                center_o+=1
-    if first_player==COMPUTER:
-        if center_x>=8:
-            center_x,center_o,empty=0,0,0
-    else:
-        if center_o>=8:
-            center_x,center_o,empty=0,0,0
 
-    safe_moves_c,safe_moves_h=0,0
-    if first_player==COMPUTER:
+    # give priority to center
+    center_x, center_o, empty = 0, 0, 0
+    # for x in range(n//4, 3*n//4):
+    #     for y in range(m//4, 3*m//4):
+    #         if state[y][x] == 0:
+    #             empty += 1
+    #         elif state[y][x] % 2 == 1:
+    #             center_x += 1
+    #         elif state[y][x] % 2 == 0:
+    #             center_o += 1
+    # if first_player == COMPUTER:
+    #     if center_x >= 8:
+    #         center_x, center_o, empty = 0, 0, 0
+    # else:
+    #     if center_o >= 8:
+    #         center_x, center_o, empty = 0, 0, 0
+
+    safe_moves_c, safe_moves_h = 0, 0
+    if first_player == COMPUTER:
         for x in range(n):
             for y in range(m-1):
                 if state[y][x] == 0 and state[y+1][x] == 0\
-                    and (x==0 or (state[y][x-1]!=0 and state[y+1][x-1]!=0)) and \
-                    (x==n-1 or (state[y][x+1]!=0 and state[y+1][x+1]!=0)):
-                        safe_moves_c+=1
-    
+                        and (x == 0 or (state[y][x-1] != 0 and state[y+1][x-1] != 0)) and \
+                        (x == n-1 or (state[y][x+1] != 0 and state[y+1][x+1] != 0)):
+                    safe_moves_c += 1
+
     else:
         for y in range(m):
             for x in range(n-1):
                 if state[y][x] == 0 and state[y][x+1] == 0\
-                    and (y==0 or (state[y-1][x]!=0 and state[y-1][x+1]!=0)) and \
-                    (y==n-1 or (state[y+1][x]!=0 and state[y+1][x+1]!=0)):
-                        safe_moves_h+=1
-    
-    return horizontal-vertical+safe_moves_h+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 if first_player==HUMAN else \
-        vertical-horizontal+n*(m-1)+m*(n-1)+safe_moves_c+(center_x-center_o)*0.5
+                        and (y == 0 or (state[y-1][x] != 0 and state[y-1][x+1] != 0)) and \
+                        (y == n-1 or (state[y+1][x] != 0 and state[y+1][x+1] != 0)):
+                    safe_moves_h += 1
+
+    empty = 0
+    for x in range(n):
+        for y in range(m):
+            if state[y][x] == 0:
+                empty += 1
+    asym = 0
+    coef = (empty+2)*100.0/(m*n)
+    if coef > 62 and coef < 63:
+        safe_moves_coef=0
+        if move[2] == HORIZONTAL:
+            if move[1] % 2 == 0:
+                asym = 1
+                #print(coef, asym, move)
+        else:
+            if move[0] % 2 == 0:
+                asym = 1
+
+    return (horizontal-vertical)+safe_moves_h*safe_moves_coef+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 + asym*30 if first_player == HUMAN else \
+        (vertical-horizontal)+n*(m-1)+m*(n-1)+safe_moves_c*safe_moves_coef + \
+        (center_x-center_o)*0.5 + asym*30
 
 
 def max_value(state, depth, alpha, beta, move):
@@ -352,5 +374,4 @@ def play_game(size_n, size_m, first):
 
 
 if __name__ == "__main__":
-    # TODO: Implement min-max move making logic
-    play_game(8, 8, first=HUMAN)
+    play_game(8, 8, first=COMPUTER)
