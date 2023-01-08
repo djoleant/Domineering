@@ -22,12 +22,14 @@ COMPUTER = 1
 # Global variables:
 first_player = HUMAN
 board = [[]]
-asym_move=None
+asym_move = None
 next = 1
 n = 8  # number of columns - A, B, C ...
 m = 8  # number of rows - 1, 2, 3 ...
+asym_percent_floor=62
+asym_percent_ceil=63
 
-safe_moves_coef=10
+safe_moves_coef = 10
 
 
 def initialize(size_n, size_m, first):
@@ -142,11 +144,12 @@ def play_move(x, y):
 
 def get_valid_moves(board):
     """
-    The get_valid_moves function returns a list of valid moves for the current player.
-    The function takes no arguments and returns a list of tuples, where each tuple contains 
-    the coordinates (y,x) and the type of move (HORIZONTAL or VERTICAL).
-
-    :return: A list of tuples that represent the valid moves in the current state
+    The get_valid_moves function takes in a board and returns all valid moves.
+    A move is represented by a tuple of the form (y, x, orientation), where y is the row number and x is the column number. 
+    Orientation can either be 0 or 1 to indicate whether it's horizontal or vertical respectively.
+    
+    :param board: Pass the current state of the board
+    :return: A list of tuples
     """
     valid_moves = []
     if (next % 2 == 0):
@@ -233,7 +236,18 @@ def print_board():
 
 
 def heuristic(state, move):
-    global safe_moves_coef
+    """
+    The heuristic function returns a score that is the sum of:
+    - The difference in the number of available moves between the current player and its opponent.
+    - The difference in the number of safe moves for each piece, computed only for squares where there are pieces from both players. 
+        - A safe move is a move to an empty square that doesn't result in your own piece being flipped (i.e., it's not suicidal). 
+        - If you're playing as Player 1, this means you want to maximize this count since it corresponds to pieces with odd parity; otherwise, you want to minimize it since even parity corresponds
+    
+    :param state: Determine the current state of the game
+    :param move: Store the move that was made by the opponent
+    :return: The following values:
+    """
+    global safe_moves_coef, asym_percent_floor, asym_percent_ceil
     # number of remaining horizontal moves
     horizontal = 0
     for x in range(n-1):
@@ -289,8 +303,8 @@ def heuristic(state, move):
                 empty += 1
     asym = 0
     coef = (empty+2)*100.0/(m*n)
-    if coef > 62 and coef < 63:
-        #safe_moves_coef=0
+    if coef > asym_percent_floor and coef < asym_percent_ceil:
+        # safe_moves_coef=0
         if move[2] == HORIZONTAL:
             if move[1] % 2 == 0:
                 asym = 1
@@ -299,23 +313,38 @@ def heuristic(state, move):
             if move[0] % 2 == 0:
                 asym = 1
 
-    dist=0
-    if asym_move!=None:
-        if move[2]==asym_move[2]: #isti pravac
-            dist=((move[1]-asym_move[1])**2+(move[0]-asym_move[0])**2)**0.5
-            if dist>0.95 and dist<1.05:
-                dist=10
+    dist = 0
+    if asym_move != None:
+        if move[2] == asym_move[2]:  # isti pravac
+            dist = ((move[1]-asym_move[1])**2+(move[0]-asym_move[0])**2)**0.5
+            if dist > 0.95 and dist < 1.05:
+                dist = 10
 
-    return (horizontal-vertical)+safe_moves_h*safe_moves_coef+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 if first_player == HUMAN else \
-        (vertical-horizontal)+n*(m-1)+m*(n-1)+safe_moves_c*safe_moves_coef + \
-        (center_x-center_o)*0.5 + asym*30 - dist*7
+    return (horizontal-vertical)+safe_moves_h*safe_moves_coef+n*(m-1)+m*(n-1) if first_player == HUMAN else \
+        (vertical-horizontal)+n*(m-1)+m*(n-1)+safe_moves_c*safe_moves_coef + asym*30 - dist*7
 
 
 def max_value(state, depth, alpha, beta, move):
+    """
+    The max_value function is a recursive function that takes in the current state, 
+    the depth of the search tree, alpha and beta values. It returns a tuple containing 
+    the best move to take for the player at this turn (represented by its column number), 
+    and its corresponding heuristic value. The max_value function first checks if it has reached 
+    its desired depth or if there are no more moves left to make in which case it will return a tuple with:
+    (None, None) as both elements. If neither of these cases apply then it will call min_value on each possible move from
+    the
+    
+    :param state: Keep track of the current state
+    :param depth: Limit the depth of your search
+    :param alpha: Keep track of the best score we have found so far along with its corresponding move
+    :param beta: Prune the search tree
+    :param move: Keep track of the last move made
+    :return: The best move for the player to move
+    """
     next_states = get_valid_moves(state)
     # print(next_states)
     if depth == 0 or next_states is None or len(next_states) == 0:
-        return (state, heuristic(state,move), move)
+        return (state, heuristic(state, move), move)
     else:
         for s in next_states:
             alpha = max(alpha,
@@ -327,9 +356,25 @@ def max_value(state, depth, alpha, beta, move):
 
 
 def min_value(state, depth, alpha, beta, move):
+    """
+    The min_value function is a helper function for the max_value function. It 
+    takes in a state, depth, alpha and beta values as input. The min_value function 
+    iterates through all of the possible moves that can be made from the given state.  
+    If there are no more moves to make or if we have reached our maximum depth then it 
+    returns an (state, heuristic) tuple with its heuristic value being equal to what 
+    the heuristic returns for that particular state and move combination. Otherwise it  
+    calls itself recursively on each of the next states until one of
+    
+    :param state: Represent the current state of the game
+    :param depth: Limit the depth of the search
+    :param alpha: Keep track of the best score we have found so far along with the corresponding move
+    :param beta: Keep track of the best score that the maximizing player can currently achieve
+    :param move: Keep track of the move that was made to get from the parent node to this node
+    :return: The minimum value of the next state and its move
+    """
     next_states = get_valid_moves(state)
     if depth == 0 or next_states is None or len(next_states) == 0:
-        return (state, heuristic(state,move), move)
+        return (state, heuristic(state, move), move)
     else:
         for s in next_states:
             beta = min(beta,
@@ -341,6 +386,19 @@ def min_value(state, depth, alpha, beta, move):
 
 
 def minmax(state, depth, my_move, alpha=(board, -1, None), beta=(board, 10000000, None)):
+    """
+    The minmax function takes a state, the depth of the search tree, whether it is my move or not (True for me and False for opponent), 
+    the alpha value to use in pruning, beta value to use in pruning and finally a best_move tuple that will be set if there is one. 
+    The function then checks if we have reached our desired depth limit or if the game has ended. If so it returns an evaluation of the board. 
+    If not it calls either max_value or min_value depending on whether I am moving or not.
+    
+    :param state: Keep track of the current state of the game
+    :param depth: Limit the depth of the search
+    :param my_move: Determine whether the current node is a max or min node
+    :param alpha: Keep track of the best score we have found so far along the path to state
+    :param beta: Keep track of the best score that the maximizing player can currently achieve
+    :return: A tuple of the form (value, move) where value is the value of that state for me and move is a possible next move
+    """
     if my_move:
         return max_value(state, depth, alpha, beta, None)
     else:
@@ -374,14 +432,14 @@ def play_game(size_n, size_m, first):
             next_state = minmax(board, 3, True)
             print(next_state)
             board = next_state[0]
-            move=next_state[2]
+            move = next_state[2]
             if move[2] == HORIZONTAL:
                 if move[1] % 2 == 0:
-                    asym_move=move
+                    asym_move = move
                 #print(coef, asym, move)
             else:
                 if move[0] % 2 == 0:
-                    asym_move=move
+                    asym_move = move
             next += 1
         print_board()
         win = check_winner()
@@ -393,4 +451,4 @@ def play_game(size_n, size_m, first):
 
 
 if __name__ == "__main__":
-    play_game(8, 8, first=HUMAN)
+    play_game(8, 8, first=COMPUTER)
