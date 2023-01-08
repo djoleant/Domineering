@@ -10,6 +10,9 @@
  """
 
 # Constants:
+from cmath import sqrt
+
+
 HORIZONTAL = 0
 VERTICAL = 1
 
@@ -19,6 +22,7 @@ COMPUTER = 1
 # Global variables:
 first_player = HUMAN
 board = [[]]
+asym_move=None
 next = 1
 n = 8  # number of columns - A, B, C ...
 m = 8  # number of rows - 1, 2, 3 ...
@@ -136,7 +140,7 @@ def play_move(x, y):
     return True
 
 
-def get_valid_moves():
+def get_valid_moves(board):
     """
     The get_valid_moves function returns a list of valid moves for the current player.
     The function takes no arguments and returns a list of tuples, where each tuple contains 
@@ -286,7 +290,7 @@ def heuristic(state, move):
     asym = 0
     coef = (empty+2)*100.0/(m*n)
     if coef > 62 and coef < 63:
-        safe_moves_coef=0
+        #safe_moves_coef=0
         if move[2] == HORIZONTAL:
             if move[1] % 2 == 0:
                 asym = 1
@@ -295,16 +299,23 @@ def heuristic(state, move):
             if move[0] % 2 == 0:
                 asym = 1
 
-    return (horizontal-vertical)+safe_moves_h*safe_moves_coef+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 + asym*30 if first_player == HUMAN else \
+    dist=0
+    if asym_move!=None:
+        if move[2]==asym_move[2]: #isti pravac
+            dist=((move[1]-asym_move[1])**2+(move[0]-asym_move[0])**2)**0.5
+            if dist>0.95 and dist<1.05:
+                dist=10
+
+    return (horizontal-vertical)+safe_moves_h*safe_moves_coef+n*(m-1)+m*(n-1)+(center_o-center_x)*0.5 if first_player == HUMAN else \
         (vertical-horizontal)+n*(m-1)+m*(n-1)+safe_moves_c*safe_moves_coef + \
-        (center_x-center_o)*0.5 + asym*30
+        (center_x-center_o)*0.5 + asym*30 - dist*7
 
 
 def max_value(state, depth, alpha, beta, move):
-    next_states = get_valid_moves()
+    next_states = get_valid_moves(state)
     # print(next_states)
     if depth == 0 or next_states is None or len(next_states) == 0:
-        return (state, heuristic(state, move), move)
+        return (state, heuristic(state,move), move)
     else:
         for s in next_states:
             alpha = max(alpha,
@@ -316,9 +327,9 @@ def max_value(state, depth, alpha, beta, move):
 
 
 def min_value(state, depth, alpha, beta, move):
-    next_states = get_valid_moves()
+    next_states = get_valid_moves(state)
     if depth == 0 or next_states is None or len(next_states) == 0:
-        return (state, heuristic(state, move), move)
+        return (state, heuristic(state,move), move)
     else:
         for s in next_states:
             beta = min(beta,
@@ -347,7 +358,7 @@ def play_game(size_n, size_m, first):
     :param size_m: Set the number of rows in the board
     :param first: Specifies which player makes the first move
     """
-    global board, next, first_player
+    global board, next, first_player, asym_move
     initialize(size_n, size_m, first)
     on_move = first_player
     print_board()
@@ -363,6 +374,14 @@ def play_game(size_n, size_m, first):
             next_state = minmax(board, 3, True)
             print(next_state)
             board = next_state[0]
+            move=next_state[2]
+            if move[2] == HORIZONTAL:
+                if move[1] % 2 == 0:
+                    asym_move=move
+                #print(coef, asym, move)
+            else:
+                if move[0] % 2 == 0:
+                    asym_move=move
             next += 1
         print_board()
         win = check_winner()
@@ -374,4 +393,4 @@ def play_game(size_n, size_m, first):
 
 
 if __name__ == "__main__":
-    play_game(8, 8, first=COMPUTER)
+    play_game(8, 8, first=HUMAN)
