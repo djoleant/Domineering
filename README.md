@@ -49,34 +49,7 @@ Start the game
 TODO: define main file
 ```
 
-## Izveštaj prve faze izrade projekta
-### Formulacija problema i interfejs
-</br>
-
-U prvoj fazi izrade projekta Dominacija su implementirane sledeće funkcije:
-
-- Funkcija za postavljanje početnog stanja
-- Funkcija za proveru kraja igre
-- Funkciju za proveru ispravnosti unetog poteza
-- Funkcija za igranje poteza
-- Funkcija za prikaz stanja
-
-## Izveštaj prve faze izrade projekta
-### Operator promene stanja
-</br>
-
-U drugoj fazi izrade projekta Dominacija su realizovane su funkcije koje obezbeđuju:
-- Menjanje trenutnog stanja igre na osnovu konkretnog poteza
-- Unos početnih parametara igre
-- Unos novog poteza i proveru da li je potez ispravan
-- Odigravanje novog poteza ako je ispravan i promenu trenutnog stanja igre
-- Prikaz novonastalog stanja igre nakon odigravanja poteza
-- Proveru kraja i određivanje pobednika u igri nakon odigravanja svakog poteza
-- Formiranje novog stanja igre na osnovu zadatog poteza i zadatog stanja igre
-- Formiranje svih mogućih stanja igre na osnovu zadatog igrača i stanja igre
-</br>
-
-
+## Funkcije
 
 ### Funkcija za postavljanje početnog stanja
 ```def initialize(size_n, size_m, first)```
