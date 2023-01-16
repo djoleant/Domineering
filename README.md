@@ -123,3 +123,29 @@ moguća stanje igre (sve moguće table), korišćenjem funkcija iz prethodne sta
 ```def play_game(size_n, size_m, first)```
 Glavna funkcija koja pozivanjem prethodno implementiranih funkcija omogućava
 odigravanje partije igre.
+
+### Funkcija heuristike
+
+```def heuristic(state, move)```
+
+Funkcija koja procenjuje valjanost poteza u igri prosleđenog kroz parametar _move_.
+
+### Funkcija minmax
+
+```def minmax(state, depth, my_move, alpha, beta)```
+
+Funkcija koja realizuje min-max algoritam pozivanjem _max_value_ i _min_value_ funkcija.
+
+### Funkcija min_value
+
+```def min_value(state, depth, alpha, beta, move)```
+
+Funkcija koja određuje minimalno stanje u igri. Ova funkcija zajedno sa funkcijom _max_value_
+čini minmax algoritam.
+
+### Funkcija max_value
+
+```def max_value(state, depth, alpha, beta, move)```
+
+Funkcija koja određuje maksimalno stanje u igri. Ova funkcija zajedno sa funkcijom _min_value_
+čini minmax algoritam.
