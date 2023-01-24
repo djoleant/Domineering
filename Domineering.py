@@ -9,10 +9,10 @@
   └──────────────────────────────────────────────────────────────────────────┘
  """
 
-# Constants:
+# Imports:
 from cmath import sqrt
 
-
+# Constants:
 HORIZONTAL = 0
 VERTICAL = 1
 
