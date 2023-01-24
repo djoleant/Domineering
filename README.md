@@ -1,7 +1,6 @@
-# Domineering
+# Domineering ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 Domineering is student project done for Artificial Intelligence subject at Faculty of Electronic Engineering, University of Niš.
 
-#### ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 #### Contributors:
 -> Emilija Ćojbašić, 18026 </br>
 -> Matija Špeletić, 18043 </br>
