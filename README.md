@@ -12,7 +12,6 @@ Domineering (also called Stop-Gate or Crosscram) is a mathematical game that can
 <img width="367" alt="image" src="https://user-images.githubusercontent.com/48065134/204281790-eaed2912-86f3-4896-be0d-a51bf09e6bac.png">
 
 ### Problem description
--> Problem is the game "Domineering" </br>
 -> Board dimensions: mxn </br>
 -> Tiles dimensions: 2x1 </br>
 -> Two players: X and O </br>
